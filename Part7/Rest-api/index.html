@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>PHP & Ajax CRUD</title>
+    <link rel="stylesheet" href="css/style.css?i=1" />
+  </head>
+
+  <body>
+    <table id="main" border="0" cellspacing="0">
+      <tr>
+        <td id="header">
+          <h1>PHP & Ajax CRUD</h1>
+
+          <div id="search-bar">
+            <label>Search :</label>
+            <input type="text" id="search" autocomplete="off" />
+          </div>
+        </td>
+      </tr>
+      <tr>
+        <td id="table-form">
+          <form id="addForm">
+            First Name :
+            <input
+              type="text"
+              name="sfname"
+              id="sfname"
+            />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Last Name :
+            <input type="text" name="slname" id="slname" />
+            <button id="save-button">Save</button>
+          </form>
+        </td>
+      </tr>
+      <tr>
+        <td id="table-data">
+          <table
+            class="table"
+            border="1"
+            width="100%"
+            cellspacing="0"
+            cellpadding="10px"
+          >
+            <tr>
+              <th width="60px">Id</th>
+              <th>Name</th>
+              <th width="90px">Edit</th>
+              <th width="90px">Delete</th>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
+    <div class="error-message"></div>
+    <div class="success-message"></div>
+
+    <div id="modal">
+      <div id="modal-form">
+        <h2>Edit Form</h2>
+        <form action="" id="edit-form">
+          <table cellpadding="10px" width="60%">
+            <tr>
+              <td>
+                <input
+                  type="text"
+                  id="sfname"
+                  name="sfname"
+                  placeholder="First Name"
+                />
+                <input type="text" name="sid" id="sid" hidden />
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <input
+                  type="text"
+                  id="slname"
+                  name="slname"
+                  placeholder="Last Name"
+                />
+              </td>
+            </tr>
+          </table>
+          <input type="submit" value="Save" id="save-btn" />
+        </form>
+        <div id="close-btn">X</div>
+      </div>
+    </div>
+    <script
+      src="https://code.jquery.com/jquery-3.6.0.min.js"
+      integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4="
+      crossorigin="anonymous"
+    ></script>
+    <script>
+      $(document).ready(function () {
+        function loadTable() {
+          $.ajax({
+            url: "http://localhost/phpYahooBaba/Part7/Rest-api/api-fetch-all.php",
+            type: "GET",
+            success: function (data) {
+              if (data.status == false) {
+                $("#table-data").append(
+                  "<tr><td><h2>" + data.message + "</h2></td></tr>"
+                );
+              } else {
+                $.each(data, function (key, value) {
+                  $(".table").append(
+                    "<tr><td>" +
+                      value.id +
+                      "</td><td>" +
+                      value.fname +
+                      value.lname +
+                      '</td><td align="center"><button class="edit-btn" data-sid=' +
+                      value.id +
+                      '>Edit</button></td><td align="center"><button class="delete-btn">Delete</button></td></tr>'
+                  );
+                });
+              }
+            },
+          });
+        }
+        loadTable();
+        // form data to json data
+        function jsonData(targetForm) {
+          var arr = $(targetForm).serializeArray();
+          var obj = {};
+          for (var a = 0; a < arr.length; a++) {
+            if (arr[a].value == "") {
+              return false;
+            }
+            obj[arr[a].name] = arr[a].value;
+          }
+          var json = JSON.stringify(obj);
+          return json;
+        }
+        // insert data
+        $("#save-button").on("click", function (e) {
+          e.preventDefault();
+          var jsonObj = jsonData("#addForm");
+          if (jsonData == false) {
+            alert("All fields are required.");
+          } else {
+          }
+        });
+
+        // modal box
+        $(document).on("click", ".edit-btn", function () {
+          $("#modal").show();
+          var id = $(this).data("sid");
+          var obj = { sid: id };
+          var json = JSON.stringify(obj);
+
+          $.ajax({
+            url: "http://localhost/phpYahooBaba/Part7/Rest-api/api-fetch-single.php",
+            type: "POST",
+            data: json,
+            success: function (data) {
+              $("#sid").val(data[0].id);
+              $("#sfname").val(data[0].fname);
+              $("#slname").val(data[0].lname);
+              // console.log(data);
+            },
+          });
+        });
+        $(document).on("click", "#close-btn", function () {
+          $("#modal").hide();
+        });
+      });
+    </script>
+  </body>
+</html>

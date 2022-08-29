@@ -1,0 +1,46 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Trebuchet MS", "Lucida Sans Unicode", "Lucida Grande",
+    "Lucida Sans", Arial, sans-serif;
+}
+.container {
+  height: 100vh;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: oldlace;
+}
+.form {
+  background: #fff;
+  padding: 2rem;
+}
+.inp {
+  display: block;
+}
+.my {
+  margin-top: 10px;
+}
+input {
+  padding: 3px 5px;
+  border: 1px solid grey;
+  outline: none;
+}
+#response {
+  position: absolute;
+  top: 28%;
+}
+.error {
+  width: 16%;
+  padding: 6px;
+  background: rgb(255, 214, 214);
+  color: #cc2828;
+}
+.success {
+  width: 16%;
+  padding: 6px;
+  background: rgb(226, 255, 220);
+  color: green;
+}
